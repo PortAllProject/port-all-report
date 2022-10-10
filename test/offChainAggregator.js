@@ -1,10 +1,25 @@
 const testContract = artifacts.require("AccessControlledOffchainAggregator");
 const PortContract = artifacts.require("MockPortToken");
+const AccessContract = artifacts.require("SimpleWriteAccessController");
 
 contract('master chef', (accounts) => {
     it('single one observation with byte length less than 32', async () => {
-        const testInstance = await testContract.deployed();
-        const portTokenInstance = await PortContract.deployed();
+        const portTokenInstance = await PortContract.new();
+        const AccessInstance = await AccessContract.new();
+        let maximumGasPrice = 1;
+        let reasonableGasPrice = 10;
+        let microPortPerEth = 1000000;
+        let portGweiPerObservation = 500;
+        let portGweiPerTransmission = 300;
+        let port = portTokenInstance.address;
+        let billingAccessController = AccessInstance.address;
+        let requesterAccessController = AccessInstance.address;
+        let decimals = 8;
+        let description = "query something";
+
+        const testInstance = await testContract.new(maximumGasPrice, reasonableGasPrice, microPortPerEth, portGweiPerObservation, portGweiPerTransmission, 
+            port, billingAccessController, requesterAccessController, decimals, description);
+        
         let transmitterOne = accounts[0];
         let payeeOne = accounts[1];
         let transmitterTwo = accounts[3];
@@ -32,9 +47,10 @@ contract('master chef', (accounts) => {
         await testInstance.setPayees(transmiters, payees);
         await testInstance.setConfig(signers, transmiters, configVersion, encoded);
         let config = await testInstance.latestConfigDetails();
-        //console.log(config.configDigest);
+        console.log("digest:"+config.configDigest);
 
         let report = "0x000000000000f6f3ed664fd0e7be332f035ec351acf1000000000000000a02050001020000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000161736461730000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+    
         let rs = [signerOneR, signerTwoR];
         let ss = [signerOneS, signerTwoS];
         let vs = web3.utils.bytesToHex([signerOneV, signerTwoV, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0]);
@@ -57,7 +73,21 @@ contract('master chef', (accounts) => {
     });
 
     it('multiple observations with answer length less than 32', async () => {
-        const testInstance = await testContract.deployed();
+        const portTokenInstance = await PortContract.new();
+        const AccessInstance = await AccessContract.new();
+        let maximumGasPrice = 1;
+        let reasonableGasPrice = 10;
+        let microPortPerEth = 1000000;
+        let portGweiPerObservation = 500;
+        let portGweiPerTransmission = 300;
+        let port = portTokenInstance.address;
+        let billingAccessController = AccessInstance.address;
+        let requesterAccessController = AccessInstance.address;
+        let decimals = 8;
+        let description = "query something";
+
+        const testInstance = await testContract.new(maximumGasPrice, reasonableGasPrice, microPortPerEth, portGweiPerObservation, portGweiPerTransmission, 
+            port, billingAccessController, requesterAccessController, decimals, description);
         let transmitterOne = accounts[0];
         let payeeOne = accounts[1];
         let transmitterTwo = accounts[3];
@@ -114,7 +144,21 @@ contract('master chef', (accounts) => {
     });
 
     it('multiple observations with answer length greater than 32', async () => {
-        const testInstance = await testContract.deployed();
+        const portTokenInstance = await PortContract.new();
+        const AccessInstance = await AccessContract.new();
+        let maximumGasPrice = 1;
+        let reasonableGasPrice = 10;
+        let microPortPerEth = 1000000;
+        let portGweiPerObservation = 500;
+        let portGweiPerTransmission = 300;
+        let port = portTokenInstance.address;
+        let billingAccessController = AccessInstance.address;
+        let requesterAccessController = AccessInstance.address;
+        let decimals = 8;
+        let description = "query something";
+
+        const testInstance = await testContract.new(maximumGasPrice, reasonableGasPrice, microPortPerEth, portGweiPerObservation, portGweiPerTransmission, 
+            port, billingAccessController, requesterAccessController, decimals, description);
 
         let signerOneAddress = "0x824b3998700F7dcB7100D484c62a7b472B6894B6";  // generated on aelf
         //let signerOnePrivateKey = "7f6965ae260469425ae839f5abc85b504883022140d5f6fc9664a96d480c068d";
@@ -156,8 +200,21 @@ contract('master chef', (accounts) => {
     });
 
     it('configuration test', async () => {
-        const testInstance = await testContract.deployed();
-        const portTokenInstance = await PortContract.deployed();
+        const portTokenInstance = await PortContract.new();
+        const AccessInstance = await AccessContract.new();
+        let maximumGasPrice = 1;
+        let reasonableGasPrice = 10;
+        let microPortPerEth = 1000000;
+        let portGweiPerObservation = 500;
+        let portGweiPerTransmission = 300;
+        let port = portTokenInstance.address;
+        let billingAccessController = AccessInstance.address;
+        let requesterAccessController = AccessInstance.address;
+        let decimals = 8;
+        let description = "query something";
+
+        const testInstance = await testContract.new(maximumGasPrice, reasonableGasPrice, microPortPerEth, portGweiPerObservation, portGweiPerTransmission, 
+            port, billingAccessController, requesterAccessController, decimals, description);
         await testInstance.requestNewRound();
         let requestNewRoundEvent = (await testInstance.getPastEvents('RoundRequested'))[0].returnValues;
         assert.equal(requestNewRoundEvent.requester, accounts[0], "invalid requester info");
