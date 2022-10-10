@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "prettier": "2.2.1",
-    "solidity-coverage": "^0.8.0-beta.1",
-    "truffle-plugin-verify": "^0.5.7"
+    "truffle-plugin-verify": "^0.5.7",
+    "solidity-coverage": "^0.8.0-beta.1"
   }
 }
